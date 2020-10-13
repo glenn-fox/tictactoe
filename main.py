@@ -15,7 +15,7 @@ def convert_to_base_3(board):
 
 
 def get_board_from_number(num):
-    output = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    output = [0] * 9
     i = 8
     while i >= 0:
         while True:
@@ -34,6 +34,7 @@ def new_board():
 
 
 def create_entry(game_board, game_state):
+    # starting number of beads of each move
     num_beads = "10 "
     output = "%d " % game_state
     for i in game_board:
@@ -48,7 +49,7 @@ def create_entry(game_board, game_state):
 def get_move(game_board):
     # opens the file, checks for the game state in file or creates new entry
     # returns the move index
-    possible_moves = {0, 1, 2, 3, 4, 5, 6, 7, 8}
+    possible_moves = [0, 1, 2, 3, 4, 5, 6, 7, 8]
     with open("menace.txt", "r+") as menace:
         file = menace.readlines()
         game_state = convert_to_base_3(game_board)
@@ -56,19 +57,16 @@ def get_move(game_board):
 
         # check if game_state is in file return move probabilities
         for item in file:
-            item = item.split()
+            item, *move_prob = item.split()
             if str(game_state) == item[0]:
-                del item[0]
-                move_prob = item
                 not_in_file = False
+                break
 
         # if game_state is not in file, make new entry and return the move probabilities
         if not_in_file:
             new_entry = create_entry(game_board, game_state)
             menace.write(new_entry)
-            new_entry = new_entry.split()
-            del new_entry[0]
-            move_prob = new_entry
+            new_entry, *move_prob = new_entry.split()
 
         for i, j in enumerate(move_prob):
             move_prob[i] = int(j)
@@ -176,7 +174,7 @@ class Game:
                 print("Invalid move, try again.")
 
     def start_turn(self):
-        # get board state
+        # get board state before computer move
         board_state = convert_to_base_3(self.board)
 
         # computer makes move
@@ -204,14 +202,10 @@ class Game:
         if not game_done:
             self.start_turn()
 
-        # test
         train(last_pc_move, self.winner, board_state)
-        # if player win subtract from move
-        # else add to move
 
 
-# main game code
-
+# main menu
 
 keep_playing = ""
 while keep_playing != "n":
