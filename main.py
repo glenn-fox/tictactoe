@@ -130,10 +130,6 @@ class Game:
     def check_win(self):
         # checks for winning conditions or draw game
         # returns True when winning condition is present or draw
-        # top horizontal line
-        # 0 | 1 | 2
-        # 3 | 4 | 5
-        # 6 | 7 | 8
         test_cases = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
         for case in test_cases:
             if self.board[case[0]] != " " and self.board[case[0]] == self.board[case[1]] and self.board[case[1]] == self.board[case[2]]:
