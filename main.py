@@ -35,7 +35,7 @@ def new_board():
 
 def create_entry(game_board, game_state):
     # starting number of beads of each move
-    num_beads = "10 "
+    num_beads = "5 "
     output = "%d " % game_state
     for i in game_board:
         if i == " ":
@@ -58,7 +58,7 @@ def get_move(game_board):
         # check if game_state is in file return move probabilities
         for item in file:
             item, *move_prob = item.split()
-            if str(game_state) == item[0]:
+            if str(game_state) == item:
                 not_in_file = False
                 break
 
@@ -82,6 +82,8 @@ def train(move, winning_player, game_state):
     # stores file into memory
     with open("menace.txt", "r") as memory:
         memory = memory.readlines()
+        # the sort is only for making sure there are no duplicate entries
+        memory.sort()
     # deletes file then rewrites it with changes
     with open("menace.txt", "w") as file:
         for line in memory:
@@ -134,7 +136,7 @@ class Game:
         # 6 | 7 | 8
         test_cases = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
         for case in test_cases:
-            if self.board[case[0]] != " " and self.board[case[0]] == self.board[case[1]] and self.board[case[1]]== self.board[case[2]]:
+            if self.board[case[0]] != " " and self.board[case[0]] == self.board[case[1]] and self.board[case[1]] == self.board[case[2]]:
                 if self.board[case[0]] == "X":
                     self.winner = "Computer"
                 elif self.board[case[0]] == "O":
@@ -173,6 +175,12 @@ class Game:
                 self.draw()
                 print("Invalid move, try again.")
 
+    def trainer_move(self):
+        possible_moves = []
+        for index, item in enumerate(self.board):
+            if item == " ":
+                possible_moves.append(index)
+
     def start_turn(self):
         # get board state before computer move
         board_state = convert_to_base_3(self.board)
@@ -191,6 +199,7 @@ class Game:
 
         # player makes move
         self.player_turn()
+        # self.trainer_move()
 
         # check for win
         game_done, winner = self.check_win()
@@ -212,4 +221,3 @@ while keep_playing != "n":
     game = Game()
     game.start_turn()
     keep_playing = input("Continue playing? [Y/n] ").lower()
-
